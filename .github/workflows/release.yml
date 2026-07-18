@@ -87,20 +87,30 @@ jobs:
           cache-read-only: true
 
       - name: Build and verify Fabric
+        shell: bash
         env:
           MOD_VERSION: ${{ steps.release.outputs.version }}
-        run: >-
-          ./gradlew
-          :fabric:clean
-          :textile:clean
-          :test
-          :compilePluginTestJava
-          :validateTranslation
-          :fabric:build
-          :fabric:apiJar
-          -PenabledPlatforms=fabric
-          --console=plain
-          --rerun-tasks
+        run: |
+          for attempt in 1 2 3; do
+            if ./gradlew \
+              :fabric:clean \
+              :textile:clean \
+              :test \
+              :compilePluginTestJava \
+              :validateTranslation \
+              :fabric:build \
+              :fabric:apiJar \
+              -PenabledPlatforms=fabric \
+              --console=plain \
+              --rerun-tasks; then
+              exit 0
+            fi
+            if [[ "${attempt}" == "3" ]]; then
+              exit 1
+            fi
+            echo "Gradle release attempt ${attempt} failed; retrying transient dependency downloads" >&2
+            sleep $((attempt * 10))
+          done
 
       - id: artifacts
         name: Inspect release artifacts

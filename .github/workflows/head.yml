@@ -33,9 +33,21 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: ${{ github.repository != 'badasintended/wthit' }}
-      - run: ./gradlew :fabric:build -PenabledPlatforms=fabric --console=plain
+      - name: Build Fabric
+        shell: bash
         env:
           GIT_HASH: ${{ steps.vars.outputs.git_hash }}
+        run: |
+          for attempt in 1 2 3; do
+            if ./gradlew :fabric:build -PenabledPlatforms=fabric --console=plain; then
+              exit 0
+            fi
+            if [[ "${attempt}" == "3" ]]; then
+              exit 1
+            fi
+            echo "Gradle build attempt ${attempt} failed; retrying transient dependency downloads" >&2
+            sleep $((attempt * 10))
+          done
       - uses: actions/upload-artifact@v4
         with:
           name: wthit-${{ steps.vars.outputs.git_hash }}

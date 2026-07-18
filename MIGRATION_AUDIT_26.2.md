@@ -10,7 +10,7 @@ base_commit: "8a61749b37f38f670dbff0f23ec4ed752439663f"
 last_verified_head: "8a61749b37f38f670dbff0f23ec4ed752439663f"
 phase: "complete"
 status: "complete"
-last_updated: "2026-07-18T19:08:43+08:00"
+last_updated: "2026-07-18T19:18:00+08:00"
 working_tree: "Uncommitted Fabric 26.2 migration and 20.0.0 release preparation; user-owned MIGRATION_PROMPT_26.2.md remains untracked and must not be staged"
 next_action: "Review and commit all migration/release files except MIGRATION_PROMPT_26.2.md, push dev/26.2, require the head Action to pass, then push annotated tag 20.0.0 and monitor the release Action"
 ---
@@ -292,6 +292,7 @@ Release preparation evidence:
 - The workflow deliberately does not run Maven, CurseForge, or Modrinth publication. The fork has none of the four external publisher secrets, and the removed historical workflow would incorrectly build all loaders.
 - `workflow_dispatch` remains declared for future use after the workflow reaches the default branch. The initial release must use a tag push because GitHub only dispatches workflows that already exist on the default branch.
 - actionlint 1.7.12 reports all three workflows valid. It also exposed and prompted minimal fixes for the pre-existing unsupported pull-request tag filter and missing docs step output.
+- The first remote `head` run (`29642231111`) reached Gradle configuration but failed downloading Mod Menu 20.0.1 because Terraformers Maven closed a chunked response prematurely. This is an external transfer failure, not a source failure. Both head and release builds now retry the identical Gradle command up to three times with bounded 10/20-second backoff; the third failure still blocks publication.
 
 Manual release matrix still required for stronger client confidence:
 
