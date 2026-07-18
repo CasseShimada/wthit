@@ -1,5 +1,3 @@
-// TODO: reimplement REI
-/*
 package mcp.mobius.waila.integration.reiwhycheckingforpackagename;
 
 import mcp.mobius.waila.WailaClient;
@@ -47,4 +45,3 @@ public class ReiRecipeAction implements REIClientPlugin, IRecipeAction {
     }
 
 }
-*/

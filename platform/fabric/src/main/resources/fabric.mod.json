@@ -15,9 +15,6 @@
     "server"        : [
       "mcp.mobius.waila.fabric.FabricWailaDedicatedServer"
     ],
-    "emi"           : [
-      "mcp.mobius.waila.integration.emi.EmiRecipeAction"
-    ],
     "jei_mod_plugin": [
       "mcp.mobius.waila.integration.jei.JeiRecipeAction"
     ],
@@ -58,10 +55,11 @@
   ],
 
   "depends"      : {
-    "fabricloader": ">=0.18.4",
-    "fabric-api"  : ">=0.143.14",
-    "minecraft"   : ">=26.1-",
-    "badpackets"  : ">=0.12-"
+    "fabricloader": ">=0.19.3",
+    "fabric-api"  : ">=0.153.0",
+    "minecraft"   : "~26.2-",
+    "java"        : ">=25",
+    "badpackets"  : ">=0.12.2"
   },
   "breaks"       : {
     "roughlyenoughitems": "<9.0.462"

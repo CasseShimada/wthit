@@ -14,6 +14,11 @@
 ## Building Instruction
 To build the project, run `./gradlew build` on *nix or `gradlew.bat build` on Windows.
 
+To configure and build only the Fabric distribution and its required shared Textile project, run
+`./gradlew :fabric:build -PenabledPlatforms=fabric` (or the equivalent `gradlew.bat` command on Windows).
+Omitting `enabledPlatforms` keeps the full multi-loader project graph. Development-only test plugins are
+excluded from production artifacts unless explicitly enabled with `-PincludeTestPlugins=true`.
+
 You can also build it with an IDE. When importing the project for the first time, the IDE may show
 errors about missing class from `buildconst` package. Build the project first to generate them.
 

@@ -11,7 +11,6 @@ dependencies {
     compileOnly("net.fabricmc.fabric-api:fabric-api:${rootProp["fabricApi"]}")
     compileOnly("com.terraformersmc:modmenu:${rootProp["modMenu"]}")
     compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${rootProp["rei"]}")
-    compileOnly("dev.emi:emi-fabric:${rootProp["emi"]}")
     compileOnly("teamreborn:energy:${rootProp["trEnergy"]}")
 }
 

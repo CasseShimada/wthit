@@ -15,8 +15,6 @@ dependencies {
     compileOnly("com.terraformersmc:modmenu:${rootProp["modMenu"]}")
 
     compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${rootProp["rei"]}")
-    compileOnly("dev.emi:emi-fabric:${rootProp["emi"]}")
-
     runtimeOnly("lol.bai:badpackets:fabric-${rootProp["badpackets"]}")
     runtimeOnly("net.fabricmc.fabric-api:fabric-api-deprecated:${rootProp["fabricApi"]}")
 //    runtimeOnly("dev.architectury:architectury-fabric:${rootProp["architectury"]}")
@@ -24,8 +22,7 @@ dependencies {
 
 //    runtimeOnly("TechReborn:TechReborn-1.20:5.8.1")
 
-    when (rootProp["recipeViewer"]) {
-        "emi" -> runtimeOnly("dev.emi:emi:${rootProp["emi"]}")
+    when (providers.gradleProperty("recipeViewer").getOrElse("none")) {
         "rei" -> runtimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${rootProp["rei"]}")
         "jei" -> rootProp["jei"].split("-").also { (mc, jei) ->
             runtimeOnly("mezz.jei:jei-${mc}-fabric:${jei}")
@@ -41,16 +38,16 @@ sourceSets {
     val plugin by getting
 
     main {
-        compileClasspath += textileSourceSets["main"].output
-        runtimeClasspath += textileSourceSets["main"].output
+        compileClasspath += textileSourceSets["api"].output + textileSourceSets["main"].output
+        runtimeClasspath += textileSourceSets["api"].output + textileSourceSets["main"].output
     }
 
     plugin.apply {
-        compileClasspath += textileSourceSets["plugin"].output
+        compileClasspath += textileSourceSets["api"].output + textileSourceSets["plugin"].output
     }
 
     listOf(main, plugin).applyEach {
-        runtimeClasspath += textileSourceSets["plugin"].output
+        runtimeClasspath += textileSourceSets["api"].output + textileSourceSets["plugin"].output
     }
 }
 

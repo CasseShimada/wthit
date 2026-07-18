@@ -13,8 +13,6 @@ on:
   pull_request:
     branches:
       - '**'
-    tags-ignore:
-      - '*.*'
     paths-ignore:
       - 'docs/**'
       - 'mkdocs.yml'
@@ -35,11 +33,11 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: ${{ github.repository != 'badasintended/wthit' }}
-      - run: ./gradlew build
+      - run: ./gradlew :fabric:build -PenabledPlatforms=fabric --console=plain
         env:
           GIT_HASH: ${{ steps.vars.outputs.git_hash }}
       - uses: actions/upload-artifact@v4
         with:
           name: wthit-${{ steps.vars.outputs.git_hash }}
-          path: "./platform/*/build/libs/**.jar"
+          path: "./platform/fabric/build/libs/**.jar"
       - run: ./gradlew --stop

@@ -8,8 +8,11 @@ import mcp.mobius.waila.mixin.TabNavigationBarAccess;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.TabButton;
+import net.minecraft.client.gui.components.tabs.MenuTabBar;
 import net.minecraft.client.gui.components.tabs.TabManager;
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -25,16 +28,16 @@ public interface TabbedScreen {
     );
 
     static TabNavigationBar bar(Tab<?>... tabs) {
-        return TabNavigationBar
+        return MenuTabBar
             .builder(new TabManager(t -> {}, t -> {}, t -> {
                 var tab = ((Tab<?>) t);
                 var client = Minecraft.getInstance();
-                var parent = client.screen;
+                var parent = client.gui.screen();
                 if (parent != null && parent.getClass() == tab.clazz) return;
                 if (parent instanceof TabbedScreen tabbed) {
-                    tabbed.changeTab(() -> client.setScreen(tab.ctor.apply(tabbed.getParent())));
+                    tabbed.changeTab(() -> client.gui.setScreen(tab.ctor.apply(tabbed.getParent())));
                 } else {
-                    client.setScreen(tab.ctor.apply(parent));
+                    client.gui.setScreen(tab.ctor.apply(parent));
                 }
             }, t -> {}), tabs.length)
             .addTabs(tabs)
@@ -55,7 +58,7 @@ public interface TabbedScreen {
             .filter(it -> it.clazz == clazz)
             .findFirst().orElse(null);
 
-        tabs.updateWidth(width);
+        tabs.arrangeElements(width);
         addRenderableWidget.accept(tabs);
 
         if (currentTab != null) {
@@ -67,8 +70,13 @@ public interface TabbedScreen {
     record Tab<T extends Screen & TabbedScreen>(
         Component title,
         Class<T> clazz,
-        Function<@Nullable Screen, T> ctor
+        Function<@Nullable Screen, T> ctor,
+        Layout layout
     ) implements net.minecraft.client.gui.components.tabs.Tab {
+
+        Tab(Component title, Class<T> clazz, Function<@Nullable Screen, T> ctor) {
+            this(title, clazz, ctor, new FrameLayout());
+        }
 
         @Override
         public Component getTabTitle() {
@@ -86,6 +94,11 @@ public interface TabbedScreen {
 
         @Override
         public void doLayout(ScreenRectangle screenRectangle) {
+        }
+
+        @Override
+        public Layout getLayout() {
+            return layout;
         }
 
     }

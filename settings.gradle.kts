@@ -20,18 +20,42 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
-rootProject.name = "wthit-master"
+rootProject.name = "wthit-26.2"
 
 fun platform(name: String) {
     include(name)
     project(":${name}").projectDir = file("platform/${name}")
 }
 
-platform("mojmap")
+val supportedPlatforms = setOf("mojmap", "fabric", "forge", "neo", "textile")
+val requestedPlatforms = providers.gradleProperty("enabledPlatforms").orNull
+    ?.split(',')
+    ?.map(String::trim)
+    ?.filter(String::isNotEmpty)
+    ?.toSet()
+
+val enabledPlatforms = if (requestedPlatforms == null) {
+    supportedPlatforms
+} else {
+    require(requestedPlatforms.all(supportedPlatforms::contains)) {
+        "Unknown platform in enabledPlatforms=$requestedPlatforms; supported values are $supportedPlatforms"
+    }
+
+    buildSet {
+        addAll(requestedPlatforms)
+        if ("fabric" in requestedPlatforms) add("textile")
+    }
+}
+
+fun enabledPlatform(name: String) {
+    if (name in enabledPlatforms) platform(name)
+}
+
+enabledPlatform("mojmap")
 
 //platform("bukkit")
-platform("fabric")
-platform("forge")
-platform("neo")
-platform("textile")
+enabledPlatform("fabric")
+enabledPlatform("forge")
+enabledPlatform("neo")
+enabledPlatform("textile")
 //platform("quilt")

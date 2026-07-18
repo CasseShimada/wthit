@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets
 
 plugins {
     java
-    id("net.fabricmc.fabric-loom") version "1.15.5"
+    id("net.fabricmc.fabric-loom") version "1.17.16"
     id("maven-publish")
 }
 
@@ -148,9 +148,6 @@ sourceSets {
     listOf(main, pluginCore, pluginExtra, pluginHarvest, pluginVanilla, pluginTest).applyEach {
         compileClasspath += api.output + mixin.output
     }
-    api.apply {
-        compileClasspath += apiPlatformStub.output
-    }
     mixin.apply {
         compileClasspath += api.output
     }
@@ -230,8 +227,13 @@ val apiJavadoc by tasks.registering(Javadoc::class) {
     group = "documentation"
 
     val api by sourceSets
+    val apiPlatformStub by sourceSets
+    dependsOn(apiPlatformStub.classesTaskName)
     source(api.allJava)
-    classpath += api.compileClasspath
+    source(fileTree("platform") {
+        include("*/src/api/java/**/*.java")
+    })
+    classpath += api.compileClasspath + apiPlatformStub.output
     title = "WTHIT ${prop["majorVersion"]}.x API"
     setDestinationDir(file("docs/javadoc"))
 

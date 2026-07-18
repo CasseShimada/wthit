@@ -7,6 +7,7 @@ on:
     paths:
       - 'docs/**'
       - 'src/api/**'
+      - 'platform/*/src/api/**'
       - 'settings.gradle.kts'
       - 'build.gradle.kts'
       - 'gradle.properties'
@@ -26,9 +27,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: true
-      - run: ./gradlew apiJavadoc
-        env:
-          GIT_HASH: ${{ steps.vars.outputs.git_hash }}
+      - run: ./gradlew apiJavadoc -PenabledPlatforms=fabric
       - run: pip install mkdocs-material
       - run: mkdocs gh-deploy --force
       - run: ./gradlew --stop

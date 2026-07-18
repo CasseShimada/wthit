@@ -7,6 +7,11 @@ import org.gradle.kotlin.dsl.*
 fun Project.setupPlatform(setRuntimeClasspath: Boolean = true) {
     val rootSourceSets = rootProject.extensions.getByType<SourceSetContainer>()
     val sourceSets = extensions.getByType<SourceSetContainer>()
+    val productionRootSourceSetNames = buildSet {
+        addAll(setOf("api", "main", "minecraftless", "pluginCore", "pluginExtra", "pluginHarvest", "pluginVanilla"))
+        if (providers.gradleProperty("includeTestPlugins").orNull.toBoolean()) add("pluginTest")
+    }
+    val productionRootSourceSets = rootSourceSets.filter { it.name in productionRootSourceSetNames }
 
     sourceSets.apply {
         val api by creating
@@ -28,8 +33,7 @@ fun Project.setupPlatform(setRuntimeClasspath: Boolean = true) {
         main.apply {
             resources.srcDir(rootProject.file("src/resources/resources"))
 
-            val excludedSourceSets = setOf("apiPlatformStub", "buildConst", "mixin")
-            rootSourceSets.filterNot { excludedSourceSets.contains(it.name) }.forEach {
+            productionRootSourceSets.forEach {
                 compileClasspath += it.output
                 if (setRuntimeClasspath) runtimeClasspath += it.output
             }
@@ -50,17 +54,17 @@ fun Project.setupPlatform(setRuntimeClasspath: Boolean = true) {
         from(sourceSets["api"].output)
         from(sourceSets["plugin"].output)
 
-        val excludedSourceSets = setOf("apiPlatformStub", "buildConst", "mixin")
-        rootSourceSets.filterNot { excludedSourceSets.contains(it.name) }.forEach {
+        productionRootSourceSets.forEach {
             from(it.output)
         }
     }
 
     tasks.named<Jar>("sourcesJar") {
         dependsOn(":generateTranslationClass")
+        includeEmptyDirs = false
         from(sourceSets["api"].allSource)
         from(sourceSets["plugin"].allSource)
-        rootSourceSets.forEach {
+        (productionRootSourceSets + rootSourceSets["mixin"] + rootSourceSets["buildConst"]).forEach {
             from(it.allSource)
         }
     }

@@ -1,3 +1,9 @@
+20.x - 26.2 - dev/26.2 - java 25
+================================
+20.0.0   - Updated Fabric to Minecraft 26.2
+         - Updated to Fabric Loader 0.19.3 and Fabric API 0.153.0
+         - Updated REI and JEI integrations for Minecraft 26.2
+
 19.x - 26.1.1 - dev/26.1 - java 25
 ==================================
 19.0.1   - Updated to Minecraft 26.1.1
