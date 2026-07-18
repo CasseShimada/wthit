@@ -12,7 +12,7 @@ dependencies {
 
     compileRuntime("net.fabricmc.fabric-api:fabric-api:${rootProp["fabricApi"]}")
 
-    compileOnly("com.terraformersmc:modmenu:${rootProp["modMenu"]}")
+    compileOnly("maven.modrinth:mOgUt4GM:${rootProp["modMenuModrinth"]}")
 
     compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${rootProp["rei"]}")
     runtimeOnly("lol.bai:badpackets:fabric-${rootProp["badpackets"]}")

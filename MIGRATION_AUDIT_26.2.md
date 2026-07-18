@@ -7,12 +7,12 @@ target_minecraft: "26.2"
 target_loader: "Fabric Loader 0.19.3"
 branch: "dev/26.2"
 base_commit: "8a61749b37f38f670dbff0f23ec4ed752439663f"
-last_verified_head: "8a61749b37f38f670dbff0f23ec4ed752439663f"
-phase: "complete"
-status: "complete"
-last_updated: "2026-07-18T19:18:00+08:00"
-working_tree: "Uncommitted Fabric 26.2 migration and 20.0.0 release preparation; user-owned MIGRATION_PROMPT_26.2.md remains untracked and must not be staged"
-next_action: "Review and commit all migration/release files except MIGRATION_PROMPT_26.2.md, push dev/26.2, require the head Action to pass, then push annotated tag 20.0.0 and monitor the release Action"
+last_verified_head: "74f5432549061f742f9d140ba57938ec5c233eca"
+phase: "publication"
+status: "in_progress"
+last_updated: "2026-07-18T19:30:52+08:00"
+working_tree: "Migration and release workflow are committed and pushed; official Modrinth Maven mirror correction awaits commit; user-owned MIGRATION_PROMPT_26.2.md remains untracked and must not be staged"
+next_action: "Commit and push the verified Mod Menu mirror correction, require the head Action to pass, then push annotated tag 20.0.0 and monitor the release Action"
 ---
 
 # WTHIT Fabric 26.2 Migration Audit
@@ -38,9 +38,9 @@ Remaining limitations are explicit: no graphical Fabric client was launched, so 
 | Item | Evidence / result |
 |---|---|
 | Branch | `dev/26.2` |
-| HEAD/base | `8a61749b37f38f670dbff0f23ec4ed752439663f` (`update changelog`) |
+| HEAD/base | base `8a61749b37f38f670dbff0f23ec4ed752439663f`; current local/remote HEAD `74f5432549061f742f9d140ba57938ec5c233eca` |
 | Initial worktree | No tracked/staged changes; only user-owned `?? MIGRATION_PROMPT_26.2.md` |
-| Final worktree | Uncommitted migration edits plus untracked audit/script/platform API destinations; no commit was created |
+| Current worktree | Committed migration/release preparation plus a verified Mod Menu Maven mirror correction awaiting commit; user prompt remains the only unrelated untracked file |
 | Base relationship | `dev/master...dev/26.2` was `0 0`; merge base and HEAD were identical |
 | `origin` | `https://github.com/CasseShimada/wthit` fetch/push |
 | Canonical upstream | `https://github.com/badasintended/wthit.git` |
@@ -48,11 +48,11 @@ Remaining limitations are explicit: no graphical Fabric client was launched, so 
 | dev/26.1 review | Six graph-only commits beyond merge base, five merges; only patch-unique change `33bde4e3` renames the root project for 26.1. No Fabric/Textile/common/Mixin/network/config fix required transplanting. |
 | Shared fixes already in master | `bd9104f0`, `d0fd64f0`, `05835637`, `de687207`, `e8e1764d` |
 | User file handling | `MIGRATION_PROMPT_26.2.md` was never modified |
-| Push/publication | Publication is now authorized; at this snapshot no branch/tag/release has yet been pushed or created |
+| Push/publication | `dev/26.2` is pushed through `74f54325`; no release tag or GitHub Release exists yet because the head Action gate has not passed |
 
 Read-only evidence included `git status`, `git branch --all`, `git remote --verbose`, `git rev-parse HEAD`, `git log --graph --all`, `git cherry`, `git diff`, and canonical `git ls-remote`.
 
-Important staging note: Git currently shows the six old root API files as deleted and the three owning-platform API directories as untracked. The destinations are present and were built, but a future commit must stage both sides explicitly (for example, review and then `git add -A`); `git commit -am` alone would omit the destinations. No staging or commit was requested or performed.
+The migration and owning-platform API moves were committed in `40773069a2803127ce9ef98470e97d0e724afedb`; bounded CI retries followed in `74f5432549061f742f9d140ba57938ec5c233eca`. The user-owned migration prompt was not staged in either commit.
 
 ## 3. Multi-loader architecture map
 
@@ -231,6 +231,8 @@ Key change sequence:
 | 18:26 | Exact final JAR copied only to isolate; passes 5/6 | original target untouched | both final old-world runs pass |
 | 18:31-18:33 | Platform API Javadoc aggregation and workflow trigger | documentation uses stubs only | all three loader fluid helpers documented |
 | 19:00-19:05 | Prepared stable version 20.0.0 and Fabric-only tag release workflow; built and server-tested the exact release candidate | GitHub-only publication; no external publisher or other-loader task | candidate and Action static validation pass; push/tag still pending |
+| 19:15-19:21 | Pushed migration and bounded-retry commits; observed two head Action failures | no release tag pushed | both failures isolated to truncated Terraformers Maven responses for Mod Menu 20.0.1 |
+| 19:27-19:30 | Replaced the compile-time Mod Menu source with its official Modrinth Maven coordinate and rebuilt exact 20.0.0 | dependency bytes verified identical; no packaged dependency change | all 31 tasks pass and release hashes remain identical |
 
 Three earlier isolation directories are intentionally preserved because deletion was forbidden:
 
@@ -250,6 +252,7 @@ Three earlier isolation directories are intentionally preserved because deletion
 | Final clean build | `:fabric:clean :textile:clean :fabric:build -PenabledPlatforms=fabric --rerun-tasks` | 0 | 24/24 executed; `migration-fabric-build-26.2-final.log` |
 | Pre-release final-state build | `:fabric:build -PenabledPlatforms=fabric` after the Javadoc-only script change | 0 | migration worktree configured/built; its local-version binary was SHA-256 `A0B9F7E3...C8E6` before version finalization |
 | Exact 20.0.0 candidate | `MOD_VERSION=20.0.0` with clean Textile/Fabric, root test, pluginTest compile, translation validation, Fabric build, and API JAR | 0 | release candidate SHA-256 `9C2DC2B...F801`; `release-candidate-20.0.0-build.log` |
+| Mirror-corrected exact candidate | same release command after switching Mod Menu to `maven.modrinth:mOgUt4GM:njXb639R` | 0 | 31 tasks executed; main/API hashes remain exactly `9C2DC2B...F801` / `1056477E...1138` |
 | Workflow lint | actionlint 1.7.12 over all three workflow files | 0 | release workflow valid; two pre-existing head/docs defects were minimally corrected |
 | Tests/API artifacts | `:test :validateTranslation :fabric:apiJar :fabric:apiSourcesJar` | 0 | tests up-to-date, translation validator reports pre-existing missing translations but succeeds, API artifacts generated |
 | Dev plugin source | `:compilePluginTestJava -PenabledPlatforms=fabric` | 0 | changed pluginTest sources compile while staying out of production JAR |
@@ -292,7 +295,9 @@ Release preparation evidence:
 - The workflow deliberately does not run Maven, CurseForge, or Modrinth publication. The fork has none of the four external publisher secrets, and the removed historical workflow would incorrectly build all loaders.
 - `workflow_dispatch` remains declared for future use after the workflow reaches the default branch. The initial release must use a tag push because GitHub only dispatches workflows that already exist on the default branch.
 - actionlint 1.7.12 reports all three workflows valid. It also exposed and prompted minimal fixes for the pre-existing unsupported pull-request tag filter and missing docs step output.
-- The first remote `head` run (`29642231111`) reached Gradle configuration but failed downloading Mod Menu 20.0.1 because Terraformers Maven closed a chunked response prematurely. This is an external transfer failure, not a source failure. Both head and release builds now retry the identical Gradle command up to three times with bounded 10/20-second backoff; the third failure still blocks publication.
+- The first remote `head` run (`29642231111`, commit `40773069`) reached Gradle configuration but failed downloading Mod Menu 20.0.1 because Terraformers Maven closed a chunked response prematurely. The second run (`29642336445`, commit `74f54325`) retried the identical command three times with bounded 10/20-second backoff and received the same truncated response each time. These are external transfer failures, not source failures; both runs correctly blocked publication.
+- Mod Menu 20.0.1's official Modrinth version page exposes Maven coordinate `maven.modrinth:mOgUt4GM:njXb639R`. Its 614,002-byte JAR has SHA-256 `81BFBCA06012C57C74949072F2FFAAD06360BADEE4D00DC59BFAEAC80DD24BD8`, exactly matching the previously resolved Terraformers artifact. The repository now resolves that group exclusively from `https://api.modrinth.com/maven`; the dependency remains compile-only for Fabric/Textile and does not alter the release JAR.
+- After the mirror correction, the full exact-version release command passes locally and reproduces the already server-tested main/API hashes. actionlint still reports all workflows valid. A passing remote head run remains mandatory before the release tag is pushed.
 
 Manual release matrix still required for stronger client confidence:
 
@@ -307,12 +312,12 @@ Manual release matrix still required for stronger client confidence:
 
 ## 11. Model continuation area
 
-- Current phase/status: `complete` / `complete`.
-- Current branch/HEAD: `dev/26.2` at `8a61749b37f38f670dbff0f23ec4ed752439663f`; migration and release preparation remain uncommitted.
+- Current phase/status: `publication` / `in_progress`.
+- Current branch/HEAD: `dev/26.2` at local/remote `74f5432549061f742f9d140ba57938ec5c233eca`; the verified Modrinth mirror correction is not yet committed.
 - Preserve user-owned `MIGRATION_PROMPT_26.2.md`.
 - Do not rerun the obsolete EMI baseline or treat missing EMI 26.2 as a core failure.
 - Do not delete the three controller-test directories or authoritative isolate.
 - Never modify the real target's world, mods, config, server.properties, launcher, or logs.
-- On commit, explicitly stage both deleted root API paths and untracked owning-platform destinations, audit, server-validation script, and release workflow; do not stage the user prompt and do not use `git commit -am`.
+- The migration and release workflow are already committed and pushed. Keep the user prompt untracked when staging the mirror correction and audit update.
 - Other loaders remain retained but unvalidated. Do not claim Forge/NeoForge/Quilt 26.2 compatibility.
-- Authorized next sequence: commit, push `dev/26.2`, wait for the `head` workflow, create/push annotated tag `20.0.0` at that exact commit, monitor the `release` workflow, verify assets/hashes, then record remote evidence. Optional client work remains the manual matrix above.
+- Authorized next sequence: commit/push the mirror correction, wait for the `head` workflow, create/push annotated tag `20.0.0` at that exact commit, monitor the `release` workflow, verify assets/hashes, then record remote evidence. Optional client work remains the manual matrix above.

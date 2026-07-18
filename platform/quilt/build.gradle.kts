@@ -17,7 +17,7 @@ dependencies {
     modCompileRuntime("org.quiltmc.quilted-fabric-api:fabric-lifecycle-events-v1:${rootProp["qfapi"]}")
     modCompileRuntime("org.quiltmc.quilted-fabric-api:fabric-mining-level-api-v1:${rootProp["qfapi"]}")
 
-    modCompileRuntime("com.terraformersmc:modmenu:${rootProp["modMenu"]}")
+    modCompileRuntime("maven.modrinth:mOgUt4GM:${rootProp["modMenuModrinth"]}")
 
     modRuntimeOnly("lol.bai:badpackets:fabric-${rootProp["badpackets"]}")
     modRuntimeOnly("org.quiltmc.quilted-fabric-api:quilted-fabric-api:${rootProp["qfapi"]}")

@@ -20,7 +20,17 @@ allprojects {
         maven("https://maven2.bai.lol")
         maven("https://maven.blamejared.com")
         maven("https://maven.shedaniel.me")
-        maven("https://maven.terraformersmc.com/releases")
+
+        exclusiveContent {
+            forRepository {
+                maven("https://api.modrinth.com/maven") {
+                    name = "Modrinth"
+                }
+            }
+            filter {
+                includeGroup("maven.modrinth")
+            }
+        }
 
         maven("https://cursemaven.com") {
             content {
