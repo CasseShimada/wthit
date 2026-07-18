@@ -7,29 +7,31 @@ target_minecraft: "26.2"
 target_loader: "Fabric Loader 0.19.3"
 branch: "dev/26.2"
 base_commit: "8a61749b37f38f670dbff0f23ec4ed752439663f"
-last_verified_head: "74f5432549061f742f9d140ba57938ec5c233eca"
-phase: "publication"
-status: "in_progress"
-last_updated: "2026-07-18T19:30:52+08:00"
-working_tree: "Migration and release workflow are committed and pushed; official Modrinth Maven mirror correction awaits commit; user-owned MIGRATION_PROMPT_26.2.md remains untracked and must not be staged"
-next_action: "Commit and push the verified Mod Menu mirror correction, require the head Action to pass, then push annotated tag 20.0.0 and monitor the release Action"
+last_verified_head: "eab1a6b3a53bc41815ee55ea18e5887580acee1e"
+phase: "complete"
+status: "complete"
+last_updated: "2026-07-18T19:44:36+08:00"
+working_tree: "GitHub Release 20.0.0 is published and independently verified; user-owned MIGRATION_PROMPT_26.2.md remains the only untracked file"
+next_action: "No publication work remains; optionally complete the manual graphical-client compatibility matrix"
 ---
 
 # WTHIT Fabric 26.2 Migration Audit
 
 ## 1. Executive summary
 
-The WTHIT Fabric path is upgraded from Minecraft 26.1.1 to Minecraft 26.2 and validated against Java 25, Fabric Loader 0.19.3, and Fabric API 0.153.0+26.2. The final Fabric-only clean build, API artifacts, development test-plugin compilation, aggregate API Javadoc, dependency reports, JAR purity scans, two consecutive old-world dedicated-server runs, and an additional exact-version 20.0.0 release-candidate server run succeeded.
+The WTHIT Fabric path is upgraded from Minecraft 26.1.1 to Minecraft 26.2 and validated against Java 25, Fabric Loader 0.19.3, and Fabric API 0.153.0+26.2. The final Fabric-only clean build, API artifacts, development test-plugin compilation, aggregate API Javadoc, dependency reports, JAR purity scans, two consecutive old-world dedicated-server runs, an exact-version 20.0.0 release-candidate run, and a final run using the downloaded GitHub Release asset succeeded.
 
 This is deliberately not a whole-repository loader upgrade. Root common/API/Mixin/resources, `platform/mojmap`, `platform/textile`, `platform/fabric`, `platform/forge`, and `platform/neo` remain structurally present. Forge and NeoForge were neither configured by the Fabric-only build nor upgraded or runtime-tested. Their only source change is the minimal relocation of their public fluid helper into their owning API source set.
 
-The final server-tested binary is:
+The final GitHub-released and server-tested binary is:
 
-`C:/Users/Admin/Documents/GitHub/wthit/platform/fabric/build/libs/wthit-26.2-fabric-20.0.0.jar`
+`https://github.com/CasseShimada/wthit/releases/download/20.0.0/wthit-26.2-fabric-20.0.0.jar`
 
-- Size: 880,908 bytes
-- SHA-256: `9C2DC2B06132256CCA71832FD8A979027554F31F3BB772F0859E90AB59EEF801`
+- Size: 880,900 bytes
+- SHA-256: `7816A72B854349663C0D9FF9DD74A3811820BD5696EACBEF0BA2FB7682E76C99`
 - 649 unique entries, Java class major 69, no duplicates, no Forge/NeoForge/test/pluginTest/stub classes or metadata, and no forbidden constant-pool or `jdeps` references.
+
+The Windows-local candidate is 880,908 bytes with SHA-256 `9C2DC2B06132256CCA71832FD8A979027554F31F3BB772F0859E90AB59EEF801`. Entry-by-entry comparison found exactly eight differences: each `META-INF/services/*` descriptor ends with CRLF locally and LF in the Linux Action build. Every class, metadata file, entry name, and all other resource contents are identical. The downloaded Linux-built asset itself passed the final dedicated-server run.
 
 Remaining limitations are explicit: no graphical Fabric client was launched, so overlay rendering, configuration screens, keybinds, player permission behavior, actual client connect/disconnect/reconnect, and REI/JEI/Mod Menu interactions remain manual. Team Reborn Energy compiles and absence is safe, but an energy-capability-present runtime was not exercised. The original target had no pre-existing WTHIT configuration, so real legacy user-config parsing could not be demonstrated; generated WTHIT config was stable across repeated runs.
 
@@ -38,9 +40,9 @@ Remaining limitations are explicit: no graphical Fabric client was launched, so 
 | Item | Evidence / result |
 |---|---|
 | Branch | `dev/26.2` |
-| HEAD/base | base `8a61749b37f38f670dbff0f23ec4ed752439663f`; current local/remote HEAD `74f5432549061f742f9d140ba57938ec5c233eca` |
+| HEAD/base | base `8a61749b37f38f670dbff0f23ec4ed752439663f`; release tag `20.0.0` resolves to `eab1a6b3a53bc41815ee55ea18e5887580acee1e` |
 | Initial worktree | No tracked/staged changes; only user-owned `?? MIGRATION_PROMPT_26.2.md` |
-| Current worktree | Committed migration/release preparation plus a verified Mod Menu Maven mirror correction awaiting commit; user prompt remains the only unrelated untracked file |
+| Current worktree | Release code, workflow, and mirror correction are committed and pushed; only the user prompt remains untracked before this evidence-only audit update |
 | Base relationship | `dev/master...dev/26.2` was `0 0`; merge base and HEAD were identical |
 | `origin` | `https://github.com/CasseShimada/wthit` fetch/push |
 | Canonical upstream | `https://github.com/badasintended/wthit.git` |
@@ -48,11 +50,11 @@ Remaining limitations are explicit: no graphical Fabric client was launched, so 
 | dev/26.1 review | Six graph-only commits beyond merge base, five merges; only patch-unique change `33bde4e3` renames the root project for 26.1. No Fabric/Textile/common/Mixin/network/config fix required transplanting. |
 | Shared fixes already in master | `bd9104f0`, `d0fd64f0`, `05835637`, `de687207`, `e8e1764d` |
 | User file handling | `MIGRATION_PROMPT_26.2.md` was never modified |
-| Push/publication | `dev/26.2` is pushed through `74f54325`; no release tag or GitHub Release exists yet because the head Action gate has not passed |
+| Push/publication | `dev/26.2` pushed through `eab1a6b3`; annotated tag `20.0.0` and stable GitHub Release `[26.2 Fabric] 20.0.0` published successfully |
 
 Read-only evidence included `git status`, `git branch --all`, `git remote --verbose`, `git rev-parse HEAD`, `git log --graph --all`, `git cherry`, `git diff`, and canonical `git ls-remote`.
 
-The migration and owning-platform API moves were committed in `40773069a2803127ce9ef98470e97d0e724afedb`; bounded CI retries followed in `74f5432549061f742f9d140ba57938ec5c233eca`. The user-owned migration prompt was not staged in either commit.
+The migration and owning-platform API moves were committed in `40773069a2803127ce9ef98470e97d0e724afedb`; bounded CI retries followed in `74f5432549061f742f9d140ba57938ec5c233eca`; the verified official Modrinth mirror correction was committed in release-tagged `eab1a6b3a53bc41815ee55ea18e5887580acee1e`. The user-owned migration prompt was not staged.
 
 ## 3. Multi-loader architecture map
 
@@ -233,6 +235,8 @@ Key change sequence:
 | 19:00-19:05 | Prepared stable version 20.0.0 and Fabric-only tag release workflow; built and server-tested the exact release candidate | GitHub-only publication; no external publisher or other-loader task | candidate and Action static validation pass; push/tag still pending |
 | 19:15-19:21 | Pushed migration and bounded-retry commits; observed two head Action failures | no release tag pushed | both failures isolated to truncated Terraformers Maven responses for Mod Menu 20.0.1 |
 | 19:27-19:30 | Replaced the compile-time Mod Menu source with its official Modrinth Maven coordinate and rebuilt exact 20.0.0 | dependency bytes verified identical; no packaged dependency change | all 31 tasks pass and release hashes remain identical |
+| 19:33-19:39 | Pushed mirror commit, passed head Action, pushed annotated tag, and completed tag-triggered release Action | GitHub-only Fabric publication | branch run `29642767047` and release run `29642871771` pass; stable Release created |
+| 19:40-19:44 | Downloaded both GitHub assets, verified digests and ZIP differences, scanned the main JAR, and ran exact released asset in the isolate | released binary itself tested | pass 8 exits 0, clean stop, five plugins, zero runtime failures |
 
 Three earlier isolation directories are intentionally preserved because deletion was forbidden:
 
@@ -254,6 +258,9 @@ Three earlier isolation directories are intentionally preserved because deletion
 | Exact 20.0.0 candidate | `MOD_VERSION=20.0.0` with clean Textile/Fabric, root test, pluginTest compile, translation validation, Fabric build, and API JAR | 0 | release candidate SHA-256 `9C2DC2B...F801`; `release-candidate-20.0.0-build.log` |
 | Mirror-corrected exact candidate | same release command after switching Mod Menu to `maven.modrinth:mOgUt4GM:njXb639R` | 0 | 31 tasks executed; main/API hashes remain exactly `9C2DC2B...F801` / `1056477E...1138` |
 | Workflow lint | actionlint 1.7.12 over all three workflow files | 0 | release workflow valid; two pre-existing head/docs defects were minimally corrected |
+| Remote head Action | run `29642767047` for `eab1a6b3` | 0 | Fabric build and artifact upload pass in 2m05s |
+| Tag release Action | run `29642871771` for `20.0.0` / `eab1a6b3` | 0 | full build/test, artifact scan, workflow artifact, and GitHub Release publication pass in 2m24s |
+| Downloaded release assets | `gh release download 20.0.0` plus SHA-256, ZIP-entry, metadata, and local `jdeps` checks | 0 | GitHub digests match downloads; 649 unique main entries; zero forbidden dependency hits |
 | Tests/API artifacts | `:test :validateTranslation :fabric:apiJar :fabric:apiSourcesJar` | 0 | tests up-to-date, translation validator reports pre-existing missing translations but succeeds, API artifacts generated |
 | Dev plugin source | `:compilePluginTestJava -PenabledPlatforms=fabric` | 0 | changed pluginTest sources compile while staying out of production JAR |
 | API docs | `apiJavadoc -PenabledPlatforms=fabric` | 0 | Fabric/Forge/Neo fluid helper HTML generated; only external link redirect warning |
@@ -263,41 +270,46 @@ Three earlier isolation directories are intentionally preserved because deletion
 | Final server pass 5 | validation script, authoritative isolate | 0 | Done=1, clean stop=true, forced=false, runtime failures=0 |
 | Final server pass 6 | same old-world isolate after save | 0 | Done=1, clean stop=true, forced=false, runtime failures=0 |
 | Exact release pass 7 | exact 20.0.0 candidate copied only into authoritative isolate | 0 | WTHIT 20.0.0, Done=1, five plugins, dump/save, clean stop, forced=false, runtime failures=0 |
+| Published release pass 8 | downloaded GitHub main asset copied only into authoritative isolate | 0 | WTHIT 20.0.0, Done=1, five plugins, dump/save, clean stop, forced=false, runtime failures=0 |
 
 Final artifact inventory:
 
 | Artifact | Bytes | SHA-256 | Entries | Purity |
 |---|---:|---|---:|---|
-| `wthit-26.2-fabric-20.0.0.jar` | 880,908 | `9C2DC2B06132256CCA71832FD8A979027554F31F3BB772F0859E90AB59EEF801` | 649 | passed |
-| `wthit-26.2-fabric-20.0.0-sources.jar` | 425,590 | `03FE8015B66DB8103FC229E9F50CD806C5BE743F23FD854BA6B5EFBD3ED4CFCA` | 505 | passed |
-| `wthit-26.2-fabric-20.0.0-api.jar` | 118,219 | `1056477E0AC7E9FC1882422927CB795F905038FC784FD3F8BE70DD5914E81138` | 140 | passed |
-| `wthit-26.2-fabric-20.0.0-api-sources.jar` | 69,038 | `610AD714A2E9BADAAC623D0AC56EF1266AE7ABD3A7CA0B1F47DE15569BC542F8` | 95 | passed |
+| GitHub asset `wthit-26.2-fabric-20.0.0.jar` | 880,900 | `7816A72B854349663C0D9FF9DD74A3811820BD5696EACBEF0BA2FB7682E76C99` | 649 | passed and server-tested |
+| Local-only `wthit-26.2-fabric-20.0.0-sources.jar` | 425,590 | `03FE8015B66DB8103FC229E9F50CD806C5BE743F23FD854BA6B5EFBD3ED4CFCA` | 505 | passed |
+| GitHub asset `wthit-26.2-fabric-20.0.0-api.jar` | 118,219 | `1056477E0AC7E9FC1882422927CB795F905038FC784FD3F8BE70DD5914E81138` | 140 | passed |
+| Local-only `wthit-26.2-fabric-20.0.0-api-sources.jar` | 69,038 | `610AD714A2E9BADAAC623D0AC56EF1266AE7ABD3A7CA0B1F47DE15569BC542F8` | 95 | passed |
 
 Final server evidence:
 
 - Isolate: `C:/Users/Admin/AppData/Local/Programs/Minecraft_Client/PCL2/.minecraft/versions/wthit-fabric-26.2-test-20260718-180400`
 - Isolation bind/port: `127.0.0.1:25625`, modified only in the isolate.
-- Exact release-candidate JAR hash in the isolate exactly equals `9C2DC2B0...F801`.
+- Pass 7's local release-candidate JAR hash in the isolate exactly equals `9C2DC2B0...F801`; pass 8's downloaded GitHub asset exactly equals its published digest `7816A72B...6C99`.
 - Pass 5 stdout: 9,662 bytes, SHA-256 `90C0D93462FB2C96529910F261AF4E3C40770541E7876F3F7C04FC74410267A8`.
 - Pass 6 stdout: 9,663 bytes, SHA-256 `2C3DF7D1A4A5DF85D874C32F90F30A0DC2A94855234AC08D5BECED5DCCD68EBC`.
 - Pass 7 stdout: 9,656 bytes, SHA-256 `0762DEBB8949CB91FC650B053790ACC5D3C428F607E6629CC7A9BA03906BCEAB`.
-- Passes 5-7 stderr: 523 bytes each, SHA-256 `37CD8362F1166B48D04CC268E22CB21452842093BF6C3C31AF8A0648E91BE422`; they contain JVM native-access warnings, not server/WTHIT failures.
-- Passes 5/6 show the final local build and pass 7 shows exact WTHIT 20.0.0; all show Minecraft 26.2, Loader 0.19.3, badpackets 0.12.2, Mixin 0.8.7, five WTHIT plugins, all-dimension saves, and clean stop.
+- Pass 8 stdout: 9,656 bytes, SHA-256 `70CB0922BDA8C4D3E8E44442843DCD8C90079E3C3F31489AC18858ECE08368E2`.
+- Passes 5-8 stderr: 523 bytes each, SHA-256 `37CD8362F1166B48D04CC268E22CB21452842093BF6C3C31AF8A0648E91BE422`; they contain JVM native-access warnings, not server/WTHIT failures.
+- Passes 5/6 show the final local build, pass 7 shows the exact local 20.0.0 candidate, and pass 8 shows the downloaded GitHub Release asset; all show Minecraft 26.2, Loader 0.19.3, badpackets 0.12.2, Mixin 0.8.7, five WTHIT plugins, all-dimension saves, and clean stop.
 - Commands per pass: `waila plugin list`, `waila dump`, `save-all flush`, `stop`.
-- Latest exact-release dump: 3,463 bytes, SHA-256 `E6B8F625012247317523CBC0382E6C383E1C45F31E208097B0DDA4E059CF1A6D`; it records MC 26.2, Java 25, Loader 0.19.3, WTHIT 20.0.0, five plugins, FluidStorageProvider, and ItemStorageProvider.
+- Latest published-release dump: 3,463 bytes, SHA-256 `C0EEB55AE2AC7DDF7DC08D72420EF0ADA8D71D3BE3198BEAE587200185EE46C8`; it records MC 26.2, Java 25, Loader 0.19.3, WTHIT 20.0.0, five plugins, FluidStorageProvider, and ItemStorageProvider.
 
 The target isolate also retained its existing 26.2 Aether, Carry On, Kaleidoscope Cookery, and Twilight Forest mods, so the final smoke test was not an empty synthetic server. REI, JEI, EMI, Mod Menu, and Team Reborn Energy were absent, proving only safe absence behavior.
 
-Release preparation evidence:
+Release publication evidence:
 
 - Repository version-family history supports stable `20.0.0` for the new Minecraft 26.2 compatibility family; `majorVersion` and the top changelog entry now match.
 - `.github/workflows/release.yml` listens for `20.*.*` tag pushes, independently validates numeric SemVer and changelog presence, builds/tests only root/Textile/Fabric with `MOD_VERSION`, repeats JAR purity and `jdeps` checks, uploads the main/API workflow artifact, and creates a GitHub Release using the scoped `github.token`.
 - The workflow deliberately does not run Maven, CurseForge, or Modrinth publication. The fork has none of the four external publisher secrets, and the removed historical workflow would incorrectly build all loaders.
-- `workflow_dispatch` remains declared for future use after the workflow reaches the default branch. The initial release must use a tag push because GitHub only dispatches workflows that already exist on the default branch.
+- `workflow_dispatch` remains declared for future use after the workflow reaches the default branch. The initial release correctly used a tag push because GitHub only dispatches workflows that already exist on the default branch.
 - actionlint 1.7.12 reports all three workflows valid. It also exposed and prompted minimal fixes for the pre-existing unsupported pull-request tag filter and missing docs step output.
 - The first remote `head` run (`29642231111`, commit `40773069`) reached Gradle configuration but failed downloading Mod Menu 20.0.1 because Terraformers Maven closed a chunked response prematurely. The second run (`29642336445`, commit `74f54325`) retried the identical command three times with bounded 10/20-second backoff and received the same truncated response each time. These are external transfer failures, not source failures; both runs correctly blocked publication.
 - Mod Menu 20.0.1's official Modrinth version page exposes Maven coordinate `maven.modrinth:mOgUt4GM:njXb639R`. Its 614,002-byte JAR has SHA-256 `81BFBCA06012C57C74949072F2FFAAD06360BADEE4D00DC59BFAEAC80DD24BD8`, exactly matching the previously resolved Terraformers artifact. The repository now resolves that group exclusively from `https://api.modrinth.com/maven`; the dependency remains compile-only for Fabric/Textile and does not alter the release JAR.
-- After the mirror correction, the full exact-version release command passes locally and reproduces the already server-tested main/API hashes. actionlint still reports all workflows valid. A passing remote head run remains mandatory before the release tag is pushed.
+- After the mirror correction, the full exact-version release command passed locally and reproduced the already server-tested local main/API hashes. actionlint still reported all workflows valid; this evidence and the subsequent green head run gated the release tag.
+- Head run `29642767047` passed for `eab1a6b3`, after which annotated tag `20.0.0` was pushed to that exact commit. Release run `29642871771` passed every build, inspection, upload, and publication step.
+- Stable, non-prerelease GitHub Release `[26.2 Fabric] 20.0.0` was published at `https://github.com/CasseShimada/wthit/releases/tag/20.0.0` with the main and API JARs. GitHub's recorded SHA-256 digests match independent downloads.
+- The Linux Action main JAR differs from the Windows candidate only by LF versus CRLF in eight ServiceLoader descriptors. The released asset's own purity/metadata/`jdeps` scans and dedicated-server pass 8 succeeded.
 
 Manual release matrix still required for stronger client confidence:
 
@@ -312,12 +324,12 @@ Manual release matrix still required for stronger client confidence:
 
 ## 11. Model continuation area
 
-- Current phase/status: `publication` / `in_progress`.
-- Current branch/HEAD: `dev/26.2` at local/remote `74f5432549061f742f9d140ba57938ec5c233eca`; the verified Modrinth mirror correction is not yet committed.
+- Current phase/status: `complete` / `complete`.
+- Release-tagged code/workflow HEAD: `eab1a6b3a53bc41815ee55ea18e5887580acee1e`; this evidence-only audit update may advance `dev/26.2` while tag `20.0.0` remains correctly fixed to the released commit.
 - Preserve user-owned `MIGRATION_PROMPT_26.2.md`.
 - Do not rerun the obsolete EMI baseline or treat missing EMI 26.2 as a core failure.
 - Do not delete the three controller-test directories or authoritative isolate.
 - Never modify the real target's world, mods, config, server.properties, launcher, or logs.
-- The migration and release workflow are already committed and pushed. Keep the user prompt untracked when staging the mirror correction and audit update.
+- Keep the user prompt untracked when staging this evidence-only audit update.
 - Other loaders remain retained but unvalidated. Do not claim Forge/NeoForge/Quilt 26.2 compatibility.
-- Authorized next sequence: commit/push the mirror correction, wait for the `head` workflow, create/push annotated tag `20.0.0` at that exact commit, monitor the `release` workflow, verify assets/hashes, then record remote evidence. Optional client work remains the manual matrix above.
+- Publication is complete. No tag, release, or asset replacement is pending. Optional client work remains the manual matrix above.
